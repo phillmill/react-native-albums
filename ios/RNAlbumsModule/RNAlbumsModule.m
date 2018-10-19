@@ -27,15 +27,15 @@ RCT_EXPORT_METHOD(getAlbumList:(NSDictionary *)options
   [RNAlbumsModule authorize:^(BOOL authorized) {
     if (authorized) {
       PHFetchResult<PHAssetCollection *> *collections =
-      [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum
+      [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum
                                                subtype:PHAssetCollectionSubtypeAny
                                                options:nil];
       __block NSMutableArray<NSDictionary *> *result = [[NSMutableArray alloc] init];
       [collections enumerateObjectsUsingBlock:^(PHAssetCollection * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         PHAssetCollectionSubtype type = [obj assetCollectionSubtype];
-        if (!isAlbumTypeSupported(type)) {
-          return;
-        }
+        // if (!isAlbumTypeSupported(type)) {
+        //   return;
+        // }
         
         PHFetchOptions *fetchOptions = [[PHFetchOptions alloc] init];
         fetchOptions.predicate = [NSPredicate predicateWithFormat:@"mediaType == %d", PHAssetMediaTypeImage];
@@ -45,7 +45,7 @@ RCT_EXPORT_METHOD(getAlbumList:(NSDictionary *)options
           
         if (coverAsset) {
             NSDictionary *album = @{@"count": @(fetchResult.count),
-                                    @"name": albumNameFromType(type),
+                                    @"name": obj.localizedTitle,
                                     // Photos Framework asset scheme ph://
                                     // https://github.com/facebook/react-native/blob/master/Libraries/CameraRoll/RCTPhotoLibraryImageLoader.m
                                     @"cover": [NSString stringWithFormat:@"ph://%@", coverAsset.localIdentifier] };
