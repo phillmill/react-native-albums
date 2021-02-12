@@ -26,5 +26,9 @@ export default {
 
     getAlbumList(options: albumListOptions = {}) {
         return NativeModules.RNAlbumsModule.getAlbumList(options);
+    },
+
+    get() {
+        return NativeModules.RNAlbumsModule.get();
     }
 };
